@@ -7,37 +7,38 @@ const FetchPokes = () => {
     //use state to store the Pokemon data
     const [pokemonData, setPokemonData] = useState([]);
 
+    function fetchPokemonData() {
+        fetch("https://pokeapi.co/api/v2/pokemon")
+            .then(response => {
+                const pokemonRawData = response.json();
+                return pokemonRawData;
+            }).then(pokemonRawData => {
+                const pokemonJsonData = pokemonRawData.results;
+                const parsedPokes = pokemonJsonData.map(pokemon => {
+                    let newPoke = [];
+                    newPoke.push(pokemon.name);
+                    console.log(pokemon.name);
+                    return newPoke;
+                })
+                setPokemonData(parsedPokes);                
+                
+            });
 
-    const fetchPokeData = e => {
-        e.preventDefault();
-        console.log(pokemonData + " ----from grabTheData");
-
-        return getPokemonData();
-
-        // console.log("GTD pokemonData is type: " + typeof pokemonData);
-        // console.log(pokemonData);
     }
 
-    async function getPokemonData() {
-        const somePokeData = await fetch("https://pokeapi.co/api/v2/pokemon");
-        const jsonPokeData = await somePokeData.json();
-        let getPokemonNames = jsonPokeData.results.map((pokemon, i) => {
-            return pokemon.name
-        });
-        let pokemonNames = getPokemonNames;
-        console.log("the names are " + pokemonNames);
-        console.log("pokemonData is type: " + typeof pokemonData);
-        console.log(pokemonData);
-        return setPokemonData(pokemonNames);
-    };
-
-
     return (
-        <form onSubmit={e => {
-            fetchPokeData(e);
-        }}>
-            <button type="submit">Fetch Pokemon</button>
-        </form>
+        <div>
+            <button onClick={() => fetchPokemonData()} type="button">Fetch Pokemon</button>
+            <br />
+            <br />
+            <ul>
+                {pokemonData.map(pokemon => {
+                    return (
+                        <li>{pokemon}</li>
+                    );
+                })}
+            </ul>
+        </div>
     )
 }
 
